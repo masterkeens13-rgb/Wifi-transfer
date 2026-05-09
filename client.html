@@ -1,60 +1,286 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>WiFi Transfer</title><style>:root{--bg:#0a0c10;--surface:#111318;--border:#1e2330;--accent:#00e5ff;--accent2:#ff3d71;--text:#cdd6f4;--muted:#555e78;--green:#a6e3a1}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:sans-serif;display:flex;flex-direction:column;min-height:100dvh}header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}.logo{color:var(--accent);letter-spacing:2px;font-size:13px}.status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}.status-dot.connected{background:var(--green);box-shadow:0 0 6px var(--green)}.status-dot.connecting{background:#f9e2af;animation:pulse 1s infinite}.status-dot.error{background:var(--accent2)}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}#statusText{font-size:12px;color:var(--muted);flex:1}#connectScreen{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}.box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px}.box h2{color:var(--accent);font-size:16px}label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:9px 12px;outline:none}.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;font-size:14px;font-weight:600}.btn-primary{background:var(--accent);color:#000}.btn-primary:disabled{opacity:.4;cursor:not-allowed}.btn-ghost{background:var(--border);color:var(--text)}.btn-sm{padding:5px 11px;font-size:12px}#appScreen{display:none;flex:1;flex-direction:column;overflow:hidden;height:calc(100dvh - 49px)}#appScreen.visible{display:flex}.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border)}.tab{flex:1;padding:11px 8px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:1px}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}.tab-badge{background:var(--accent2);color:#fff;font-size:10px;width:15px;height:15px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:3px;vertical-align:middle}.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden}.tab-panel.active{display:flex}#chatMessages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.msg-row{display:flex;flex-direction:column;max-width:80%}.msg-row.mine{align-self:flex-end;align-items:flex-end}.msg-row.theirs{align-self:flex-start}.msg-row.system{align-self:center;max-width:100%}.msg-name{font-size:11px;color:var(--muted);margin-bottom:3px}.msg-bubble{padding:8px 12px;border-radius:12px;font-size:14px;line-height:1.4;word-break:break-word}.mine .msg-bubble{background:var(--accent);color:#000;border-bottom-right-radius:3px}.theirs .msg-bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:3px}.system .msg-bubble{color:var(--muted);font-size:12px;text-align:center}.msg-time{font-size:10px;color:var(--muted);margin-top:2px}.chat-input-row{display:flex;gap:8px;padding:10px 12px;background:var(--surface);border-top:1px solid var(--border);align-items:center}.chat-input-row input{flex:1;border-radius:20px}.target-row{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--bg);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)}select{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:4px 8px;outline:none;flex:1}.drop-zone{margin:12px;border:2px dashed var(--border);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;position:relative;transition:border-color .2s}.drop-zone:hover{border-color:var(--accent)}.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}.drop-icon{font-size:30px;margin-bottom:8px}.drop-zone p{color:var(--muted);font-size:13px}.drop-zone strong{color:var(--accent)}.progress-bar{display:none;height:4px;background:var(--border);border-radius:2px;margin:0 12px 8px}.progress-bar.visible{display:block}.progress-fill{height:100%;background:var(--accent);width:0%;transition:width .3s;border-radius:2px}.files-list{flex:1;overflow-y:auto;padding:0 12px 12px;display:flex;flex-direction:column;gap:6px}.file-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px}.file-icon{font-size:20px;flex-shrink:0}.file-info{flex:1;min-width:0}.file-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-meta{font-size:11px;color:var(--muted)}.file-item a{text-decoration:none}.new-badge{font-size:9px;background:var(--accent2);color:#fff;border-radius:3px;padding:2px 5px;font-weight:700;text-transform:uppercase}#devicesPanel{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.device-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}.device-avatar{width:34px;height:34px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}.device-name{font-size:14px;font-weight:600}.device-id{font-size:11px;color:var(--muted)}.device-you{font-size:10px;color:var(--accent);font-weight:600}#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}#toast.show{opacity:1}.empty{text-align:center;color:var(--muted);font-size:13px;padding:32px 0}</style></head><body>
-<header><div class="status-dot" id="sd"></div><div class="logo">⚡ WIFI TRANSFER</div><div id="statusText">Not connected</div><button class="btn btn-ghost btn-sm" id="discBtn" style="display:none" onclick="disconnect()">✕</button></header>
-<div id="connectScreen"><div class="box"><h2>// CONNECT</h2><p style="color:var(--muted);font-size:13px">Connect from anywhere.</p><div style="display:flex;flex-direction:column;gap:5px"><label>Server Address</label><input id="addr" type="text" placeholder="your-app.railway.app" autocorrect="off" spellcheck="false"/></div><div style="display:flex;flex-direction:column;gap:5px"><label>Your Name</label><input id="myName" type="text" placeholder="My Device" maxlength="32"/></div><button class="btn btn-primary" id="connBtn" onclick="connectWS()">Connect →</button></div></div>
-<div id="appScreen"><div class="tabs"><div class="tab active" data-tab="chat" onclick="switchTab('chat')">💬 Chat</div><div class="tab" data-tab="files" onclick="switchTab('files')">📁 Files<span class="tab-badge" id="fb" style="display:none">0</span></div><div class="tab" data-tab="devices" onclick="switchTab('devices')">📡 Devices</div></div>
-<div class="tab-panel active" id="chatPanel"><div class="target-row"><span>To:</span><select id="ct"><option value="all">📢 Everyone</option></select></div><div id="chatMessages"></div><div class="chat-input-row"><input id="ci" type="text" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){sendChat();event.preventDefault()}"/><button class="btn btn-primary btn-sm" onclick="sendChat()">Send</button></div></div>
-<div class="tab-panel" id="filesPanel"><div class="target-row"><span>To:</span><select id="ft"><option value="all">📢 Everyone</option></select></div><div class="drop-zone" id="dz" ondragover="ev(event)" ondragleave="lv(event)" ondrop="dp(event)"><input type="file" id="fi" multiple onchange="fs(event)"/><div class="drop-icon">📤</div><p><strong>Tap to choose files</strong></p><p style="font-size:11px;margin-top:4px">Max 500MB</p></div><div class="progress-bar" id="pb"><div class="progress-fill" id="pf"></div></div><div class="files-list" id="fl"><div class="empty" id="fe">No files yet.</div></div></div>
-<div class="tab-panel" id="devicesPanel"><div id="dl" style="padding:12px;display:flex;flex-direction:column;gap:8px"><div class="empty">Waiting...</div></div></div></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>WiFi Transfer</title><style>:root{--bg:#0a0c10;--surface:#111318;--border:#1e2330;--accent:#00e5ff;--accent2:#ff3d71;--text:#cdd6f4;--muted:#555e78;--green:#a6e3a1}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:sans-serif;display:flex;flex-direction:column;min-height:100dvh}header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}.logo{color:var(--accent);letter-spacing:2px;font-size:13px;font-weight:700}.status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0}.status-dot.connected{background:var(--green);box-shadow:0 0 6px var(--green)}.status-dot.connecting{background:#f9e2af;animation:pulse 1s infinite}.status-dot.error{background:var(--accent2)}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}#statusText{font-size:12px;color:var(--muted);flex:1}.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s}.btn-primary{background:var(--accent);color:#000}.btn-primary:disabled{opacity:.4;cursor:not-allowed}.btn-ghost{background:var(--border);color:var(--text)}.btn-danger{background:var(--accent2);color:#fff}.btn-sm{padding:5px 11px;font-size:12px}.btn-full{width:100%}input,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:9px 12px;outline:none;box-sizing:border-box}input:focus,select:focus{border-color:var(--accent)}label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px}.screen{display:none;flex:1;flex-direction:column}.screen.active{display:flex}
+/* Connect */
+#connectScreen{align-items:center;justify-content:center;padding:20px}#connectBox{width:100%;max-width:400px;gap:16px}#connectBox h2{color:var(--accent);font-size:16px}
+/* Lobby */
+#lobbyScreen{padding:12px;gap:12px;overflow-y:auto}#lobbyScreen h2{color:var(--accent);font-size:15px;font-weight:700}.room-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .2s}.room-item:hover{border-color:var(--accent)}.room-name{font-size:14px;font-weight:600;flex:1}.room-meta{font-size:11px;color:var(--muted)}.room-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;text-transform:uppercase}.public-badge{background:rgba(0,229,255,.15);color:var(--accent)}.private-badge{background:rgba(255,61,113,.15);color:var(--accent2)}.last-room-bar{background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer}.last-room-bar:hover{background:#1a2030}
+/* Room */
+#roomScreen{overflow:hidden;height:calc(100dvh - 49px)}.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border)}.tab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:.5px}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}.tab-badge{background:var(--accent2);color:#fff;font-size:9px;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:2px;vertical-align:middle}.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden}.tab-panel.active{display:flex}
+/* Chat */
+#chatMessages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.msg-row{display:flex;flex-direction:column;max-width:80%}.msg-row.mine{align-self:flex-end;align-items:flex-end}.msg-row.theirs{align-self:flex-start}.msg-row.system{align-self:center;max-width:100%}.msg-name{font-size:11px;color:var(--muted);margin-bottom:3px}.msg-bubble{padding:8px 12px;border-radius:12px;font-size:14px;line-height:1.4;word-break:break-word}.mine .msg-bubble{background:var(--accent);color:#000;border-bottom-right-radius:3px}.theirs .msg-bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:3px}.system .msg-bubble{color:var(--muted);font-size:12px;text-align:center}.msg-time{font-size:10px;color:var(--muted);margin-top:2px}.chat-input-row{display:flex;gap:8px;padding:10px 12px;background:var(--surface);border-top:1px solid var(--border);align-items:center}.chat-input-row input{flex:1;border-radius:20px;width:auto}.target-row{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--bg);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)}.target-row select{width:auto;flex:1;font-size:12px;padding:4px 8px}
+/* Files */
+.drop-zone{margin:12px;border:2px dashed var(--border);border-radius:10px;padding:24px 20px;text-align:center;cursor:pointer;position:relative;transition:border-color .2s}.drop-zone:hover{border-color:var(--accent)}.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}.drop-icon{font-size:28px;margin-bottom:6px}.drop-zone p{color:var(--muted);font-size:13px}.drop-zone strong{color:var(--accent)}.progress-bar{display:none;height:4px;background:var(--border);border-radius:2px;margin:0 12px 8px}.progress-bar.visible{display:block}.progress-fill{height:100%;background:var(--accent);width:0%;transition:width .3s;border-radius:2px}.files-list{flex:1;overflow-y:auto;padding:0 12px 12px;display:flex;flex-direction:column;gap:6px}.file-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px}.file-icon{font-size:20px;flex-shrink:0}.file-info{flex:1;min-width:0}.file-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-meta{font-size:11px;color:var(--muted)}.file-item a{text-decoration:none}.new-badge{font-size:9px;background:var(--accent2);color:#fff;border-radius:3px;padding:2px 5px;font-weight:700;text-transform:uppercase}
+/* Devices */
+#devicesPanel{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.device-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}.device-avatar{width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}.device-name{font-size:14px;font-weight:600}.device-id{font-size:11px;color:var(--muted)}.device-you{font-size:10px;color:var(--accent);font-weight:600}
+/* Vault */
+#vaultPanel{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px}.vault-header{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:4px 0 8px}
+/* Toast & misc */
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}#toast.show{opacity:1}.empty{text-align:center;color:var(--muted);font-size:13px;padding:32px 0}.pin-display{background:var(--bg);border:1px solid var(--accent);border-radius:8px;padding:12px;text-align:center;font-size:24px;font-weight:700;letter-spacing:8px;color:var(--accent);font-family:monospace}.info-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}.modal-overlay.show{display:flex}.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}.modal h3{color:var(--accent);font-size:15px}</style></head><body>
+<header><div class="status-dot" id="sd"></div><div class="logo">⚡ TRANSFER</div><div id="statusText">Not connected</div><button class="btn btn-ghost btn-sm" id="leaveBtn" style="display:none" onclick="leaveRoom()">Leave</button></header>
+
+<!-- Connect Screen -->
+<div class="screen active" id="connectScreen">
+<div class="card" id="connectBox">
+<h2>// CONNECT</h2>
+<div><label>Server URL</label><input id="serverUrl" type="text" placeholder="your-app.railway.app" autocorrect="off" spellcheck="false"/></div>
+<div><label>Your Name</label><input id="myNameInput" type="text" placeholder="My Device" maxlength="32"/></div>
+<button class="btn btn-primary btn-full" id="connBtn" onclick="connectToServer()">Connect →</button>
+</div>
+</div>
+
+<!-- Lobby Screen -->
+<div class="screen" id="lobbyScreen">
+<div id="lastRoomBar" style="display:none" class="last-room-bar" onclick="rejoinLast()">
+<span style="font-size:18px">🔄</span>
+<div style="flex:1"><div style="font-size:13px;font-weight:600">Rejoin <span id="lastRoomName"></span></div><div style="font-size:11px;color:var(--muted)">Tap to reconnect to your last room</div></div>
+</div>
+<div class="card">
+<h2>// CREATE ROOM</h2>
+<div><label>Room Name</label><input id="newRoomName" type="text" placeholder="e.g. myroom" maxlength="32"/></div>
+<div style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="isPrivate" style="width:auto"/><label style="margin:0;text-transform:none;font-size:13px" for="isPrivate">Private room (PIN protected)</label></div>
+<button class="btn btn-primary btn-full" onclick="createRoom()">Create Room</button>
+</div>
+<div class="card">
+<h2>// JOIN PRIVATE ROOM</h2>
+<div><label>Room Name</label><input id="joinRoomName" type="text" placeholder="Room name" maxlength="32"/></div>
+<div><label>PIN</label><input id="joinRoomPin" type="tel" placeholder="6-digit PIN" maxlength="6"/></div>
+<button class="btn btn-ghost btn-full" onclick="joinPrivateRoom()">Join Private Room</button>
+</div>
+<div class="card">
+<h2>// PUBLIC ROOMS</h2>
+<div id="publicRoomsList"><div class="empty">No public rooms yet.</div></div>
+<button class="btn btn-ghost btn-full btn-sm" onclick="refreshRooms()">↻ Refresh</button>
+</div>
+</div>
+
+<!-- Room Screen -->
+<div class="screen" id="roomScreen">
+<div class="tabs">
+<div class="tab active" data-tab="chat" onclick="switchTab('chat')">💬 Chat</div>
+<div class="tab" data-tab="files" onclick="switchTab('files')">📁 Files<span class="tab-badge" id="fileBadge" style="display:none">0</span></div>
+<div class="tab" data-tab="vault" onclick="switchTab('vault')">📦 Vault</div>
+<div class="tab" data-tab="devices" onclick="switchTab('devices')">📡 Devices</div>
+</div>
+
+<!-- Chat -->
+<div class="tab-panel active" id="chatPanel">
+<div class="target-row"><span>To:</span><select id="chatTarget"><option value="all">📢 Everyone</option></select></div>
+<div id="chatMessages"></div>
+<div class="chat-input-row"><input id="chatInput" type="text" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){sendChat();event.preventDefault()}"/><button class="btn btn-primary btn-sm" onclick="sendChat()">Send</button></div>
+</div>
+
+<!-- Files -->
+<div class="tab-panel" id="filesPanel">
+<div class="target-row"><span>To:</span><select id="fileTarget"><option value="all">📢 Everyone</option></select></div>
+<div class="drop-zone" ondragover="ev(event)" ondragleave="lv()" ondrop="dp(event)"><input type="file" id="fileInput" multiple onchange="handleFiles(event)"/><div class="drop-icon">📤</div><p><strong>Tap to choose files</strong></p></div>
+<div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="files-list" id="filesList"><div class="empty" id="filesEmpty">No files yet.</div></div>
+</div>
+
+<!-- Vault -->
+<div class="tab-panel" id="vaultPanel">
+<div class="vault-header" style="padding:12px 12px 0">📦 Global Vault — public room files</div>
+<div class="files-list" id="vaultList"><div class="empty">No public files yet.</div></div>
+</div>
+
+<!-- Devices -->
+<div class="tab-panel" id="devicesPanel">
+<div id="devicesList" style="padding:12px;display:flex;flex-direction:column;gap:8px"><div class="empty">No devices.</div></div>
+</div>
+</div>
+
+<!-- PIN Modal -->
+<div class="modal-overlay" id="pinModal">
+<div class="modal">
+<h3>🔒 Room Created!</h3>
+<p style="color:var(--muted);font-size:13px">Share this PIN with people you want to invite:</p>
+<div class="pin-display" id="pinDisplay"></div>
+<p style="color:var(--muted);font-size:11px;text-align:center">PIN is required to join this private room.</p>
+<button class="btn btn-primary btn-full" onclick="closePinModal()">Got it!</button>
+</div>
+</div>
+
 <div id="toast"></div>
 <script>
-let ws,myId,myName="Me",clients={},files=[],newF=0,tab="chat",sAddr="";
-function connectWS(){
-  const addr=document.getElementById("addr").value.trim();
-  const name=document.getElementById("myName").value.trim()||"Anonymous";
-  if(!addr){toast("Enter server address");return}
-  myName=name;sAddr=addr;
+const SERVER_URL_KEY="wt_server_url";const LAST_ROOM_KEY="wt_last_room";const MY_NAME_KEY="wt_my_name";
+let ws,myId,myName="Me",currentRoom=null,roomIsPublic=true,members={},roomFiles=[],vaultFiles=[],newFileCount=0,activeTab="chat",baseUrl="";
+
+// Auto fill saved values
+window.onload=()=>{
+  const saved=localStorage.getItem(SERVER_URL_KEY);
+  const savedName=localStorage.getItem(MY_NAME_KEY);
+  if(saved)document.getElementById("serverUrl").value=saved;
+  if(savedName)document.getElementById("myNameInput").value=savedName;
+};
+
+function connectToServer(){
+  let url=document.getElementById("serverUrl").value.trim();
+  const name=document.getElementById("myNameInput").value.trim()||"Anonymous";
+  if(!url){toast("Enter server URL");return}
+  if(!url.startsWith("http")&&!url.startsWith("ws"))url="https://"+url;
+  const httpBase=url.replace(/^ws/,"http");
+  baseUrl=httpBase;
+  myName=name;
+  localStorage.setItem(SERVER_URL_KEY,document.getElementById("serverUrl").value.trim());
+  localStorage.setItem(MY_NAME_KEY,name);
+  const wsUrl=httpBase.replace(/^http/,"ws");
   setStatus("connecting");
   document.getElementById("connBtn").disabled=true;
-  const proto=addr.startsWith("localhost")||addr.match(/^\d/)?"ws":"wss";
-  ws=new WebSocket(proto+"://"+addr);
+  ws=new WebSocket(wsUrl);
   ws.onopen=()=>{
     setStatus("connected");
-    document.getElementById("appScreen").classList.add("visible");
-    document.getElementById("connectScreen").style.display="none";
-    document.getElementById("discBtn").style.display="";
     ws.send(JSON.stringify({type:"set_name",name}));
+    showScreen("lobbyScreen");
+    document.getElementById("connBtn").disabled=false;
+    checkLastRoom();
   };
   ws.onmessage=e=>{if(typeof e.data==="string")onMsg(JSON.parse(e.data))};
-  ws.onclose=()=>{setStatus("error");sysMsg("Disconnected.");document.getElementById("connBtn").disabled=false};
-  ws.onerror=()=>{toast("Could not connect. Check address.");setStatus("error");document.getElementById("connBtn").disabled=false};
+  ws.onclose=()=>{setStatus("error");document.getElementById("statusText").textContent="Disconnected";document.getElementById("connBtn").disabled=false;showScreen("connectScreen");document.getElementById("leaveBtn").style.display="none"};
+  ws.onerror=()=>{toast("Could not connect.");setStatus("error");document.getElementById("connBtn").disabled=false};
 }
-function disconnect(){
-  if(ws)ws.close();
-  document.getElementById("appScreen").classList.remove("visible");
-  document.getElementById("connectScreen").style.display="";
-  document.getElementById("discBtn").style.display="none";
-  document.getElementById("chatMessages").innerHTML="";
-  document.getElementById("fl").innerHTML='<div class="empty" id="fe">No files yet.</div>';
-  files=[];clients={};myId=null;newF=0;updBadge();setStatus("disconnected");
-}
-function onMsg(m){
-  switch(m.type){
-    case"welcome":myId=m.yourId;document.getElementById("statusText").textContent="Connected · "+(m.serverName||"server");m.clients.forEach(c=>{if(c.id!==myId)clients[c.id]=c.name});refDev();refSel();sysMsg("Connected as "+myName+" (#"+myId+")");break;
-    case"client_joined":if(m.client.id!==myId){clients[m.client.id]=m.client.name;sysMsg("📡 "+m.client.name+" joined");refDev();refSel()}break;
-    case"client_left":sysMsg("👋 "+(m.name||"A device")+" left");delete clients[m.id];refDev();refSel();break;
-    case"client_renamed":clients[m.id]=m.name;refDev();refSel();break;
-    case"chat":addMsg(m.fromName,m.text,"theirs",m.private);break;
-    case"incoming_file":addRFile(m);if(tab!=="files"){newF++;updBadge()}addMsg("📁","\""+m.filename+"\" from "+m.fromName+" — check Files tab","system");break;
-    case"file_received":toast("✅ \""+m.filename+"\" sent!");setP(0);document.getElementById("pb").classList.remove("visible");break;
+
+function checkLastRoom(){
+  const last=localStorage.getItem(LAST_ROOM_KEY);
+  if(last){
+    const data=JSON.parse(last);
+    document.getElementById("lastRoomName").textContent=data.name;
+    document.getElementById("lastRoomBar").style.display="flex";
   }
 }
+
+function rejoinLast(){
+  const last=localStorage.getItem(LAST_ROOM_KEY);
+  if(!last)return;
+  const data=JSON.parse(last);
+  if(data.isPublic){
+    ws.send(JSON.stringify({type:"join_room",name:data.name}));
+  } else {
+    document.getElementById("joinRoomName").value=data.name;
+    toast("Enter PIN to rejoin private room");
+  }
+}
+
+function onMsg(m){
+  switch(m.type){
+    case"welcome":
+      myId=m.yourId;
+      updateRoomList(m.rooms||[]);
+      break;
+    case"rooms_update":
+      updateRoomList(m.rooms||[]);
+      break;
+    case"room_joined":
+      currentRoom=m.room;
+      roomIsPublic=m.isPublic;
+      members={};
+      (m.members||[]).forEach(c=>members[c.id]=c.name);
+      roomFiles=m.files||[];
+      document.getElementById("statusText").textContent="Room: "+m.room;
+      document.getElementById("leaveBtn").style.display="";
+      showScreen("roomScreen");
+      renderRoomFiles();
+      refDev();refSel();
+      sysMsg("Joined room: "+m.room);
+      localStorage.setItem(LAST_ROOM_KEY,JSON.stringify({name:m.room,isPublic:m.isPublic}));
+      if(m.pin){document.getElementById("pinDisplay").textContent=m.pin;document.getElementById("pinModal").classList.add("show")}
+      ws.send(JSON.stringify({type:"get_vault"}));
+      break;
+    case"left_room":
+      currentRoom=null;members={};roomFiles=[];
+      document.getElementById("leaveBtn").style.display="none";
+      document.getElementById("statusText").textContent="Connected";
+      document.getElementById("chatMessages").innerHTML="";
+      document.getElementById("filesList").innerHTML='<div class="empty" id="filesEmpty">No files yet.</div>';
+      newFileCount=0;updBadge();
+      showScreen("lobbyScreen");
+      updateRoomList(m.rooms||[]);
+      break;
+    case"client_joined":
+      members[m.client.id]=m.client.name;
+      sysMsg("📡 "+m.client.name+" joined");
+      refDev();refSel();
+      break;
+    case"client_left":
+      sysMsg("👋 "+(m.name||"Someone")+" left");
+      delete members[m.id];
+      refDev();refSel();
+      break;
+    case"client_renamed":
+      members[m.id]=m.name;refDev();refSel();
+      break;
+    case"chat":
+      addMsg(m.fromName,m.text,"theirs",m.private);
+      break;
+    case"incoming_file":
+      roomFiles.push(m);
+      renderRoomFiles();
+      if(activeTab!=="files"){newFileCount++;updBadge()}
+      addMsg("📁",'"'+m.filename+'" from '+m.fromName+' — check Files tab',"system");
+      break;
+    case"file_received":
+      toast('✅ "'+m.filename+'" sent!');
+      setP(0);document.getElementById("progressBar").classList.remove("visible");
+      break;
+    case"vault_update":
+      vaultFiles=m.files||[];
+      renderVault();
+      break;
+    case"error":
+      toast("❌ "+m.msg);
+      break;
+  }
+}
+
+function createRoom(){
+  const name=document.getElementById("newRoomName").value.trim();
+  const isPrivate=document.getElementById("isPrivate").checked;
+  if(!name){toast("Enter a room name");return}
+  ws.send(JSON.stringify({type:"create_room",name,isPublic:!isPrivate}));
+}
+
+function joinPrivateRoom(){
+  const name=document.getElementById("joinRoomName").value.trim();
+  const pin=document.getElementById("joinRoomPin").value.trim();
+  if(!name){toast("Enter room name");return}
+  ws.send(JSON.stringify({type:"join_room",name,pin}));
+}
+
+function joinPublicRoom(name){
+  ws.send(JSON.stringify({type:"join_room",name}));
+}
+
+function leaveRoom(){
+  ws.send(JSON.stringify({type:"leave_room"}));
+}
+
+function refreshRooms(){
+  ws.send(JSON.stringify({type:"get_rooms"}));
+}
+
+function updateRoomList(rooms){
+  const el=document.getElementById("publicRoomsList");
+  if(!rooms.length){el.innerHTML='<div class="empty">No public rooms yet.</div>';return}
+  el.innerHTML=rooms.map(r=>`
+    <div class="room-item" onclick="joinPublicRoom('${esc(r.name)}')">
+      <div style="font-size:20px">🌐</div>
+      <div style="flex:1">
+        <div class="room-name">${esc(r.name)}</div>
+        <div class="room-meta">${r.members} member${r.members!==1?"s":""} · ${r.files} file${r.files!==1?"s":""}</div>
+      </div>
+      <span class="room-badge public-badge">PUBLIC</span>
+    </div>
+  `).join("");
+}
+
+function closePinModal(){document.getElementById("pinModal").classList.remove("show")}
+
 function sendChat(){
-  const i=document.getElementById("ci"),text=i.value.trim();
+  const i=document.getElementById("chatInput"),text=i.value.trim();
   if(!text||!ws||ws.readyState!==1)return;
-  const t=document.getElementById("ct").value,toId=t==="all"?null:parseInt(t);
+  const t=document.getElementById("chatTarget").value,toId=t==="all"?null:parseInt(t);
   ws.send(JSON.stringify({type:"chat",text,toId}));i.value="";
   addMsg("You",text,"mine",toId!==null);
 }
+
 function addMsg(name,text,side,priv=false){
   const c=document.getElementById("chatMessages"),w=document.createElement("div");
   w.className="msg-row "+side;
@@ -65,15 +291,18 @@ function addMsg(name,text,side,priv=false){
   c.appendChild(w);c.scrollTop=c.scrollHeight;
 }
 function sysMsg(t){addMsg("",t,"system")}
-function ev(e){e.preventDefault();document.getElementById("dz").style.borderColor="var(--accent)"}
-function lv(){document.getElementById("dz").style.borderColor=""}
-function dp(e){e.preventDefault();document.getElementById("dz").style.borderColor="";sendFiles([...e.dataTransfer.files])}
-function fs(e){sendFiles([...e.target.files]);e.target.value=""}
+
+function ev(e){e.preventDefault();document.getElementById("fileInput").parentElement.style.borderColor="var(--accent)"}
+function lv(){document.getElementById("fileInput").parentElement.style.borderColor=""}
+function dp(e){e.preventDefault();lv();sendFiles([...e.dataTransfer.files])}
+function handleFiles(e){sendFiles([...e.target.files]);e.target.value=""}
+
 async function sendFiles(fl){
   if(!ws||ws.readyState!==1){toast("Not connected");return}
-  const t=document.getElementById("ft").value,toId=t==="all"?null:parseInt(t);
+  const t=document.getElementById("fileTarget").value,toId=t==="all"?null:parseInt(t);
   for(const f of fl){if(f.size>500*1024*1024){toast("Too large: "+f.name);continue}await sendOne(f,toId)}
 }
+
 function sendOne(file,toId){
   return new Promise(res=>{
     const r=new FileReader();
@@ -82,57 +311,87 @@ function sendOne(file,toId){
       const mb=new TextEncoder().encode(meta),nb=new Uint8Array([0]),fb=new Uint8Array(r.result);
       const out=new Uint8Array(mb.length+1+fb.length);
       out.set(mb,0);out.set(nb,mb.length);out.set(fb,mb.length+1);
-      document.getElementById("pb").classList.add("visible");setP(50);
+      document.getElementById("progressBar").classList.add("visible");setP(50);
       ws.send(out.buffer);toast("📤 Sending "+file.name+"...");setP(100);
-      addSent(file.name,file.size);setTimeout(res,300);
+      setTimeout(res,300);
     };
     r.readAsArrayBuffer(file);
   });
 }
-function addRFile(m){const e=document.getElementById("fe");if(e)e.remove();files.unshift({...m,received:true,isNew:true});renderFiles()}
-function addSent(n,s){const e=document.getElementById("fe");if(e)e.remove();files.unshift({filename:n,size:s,sent:true});renderFiles()}
-function renderFiles(){
-  const l=document.getElementById("fl");l.innerHTML="";
-  if(!files.length){l.innerHTML='<div class="empty" id="fe">No files yet.</div>';return}
-  files.forEach(f=>{
+
+function renderRoomFiles(){
+  const l=document.getElementById("filesList");
+  const empty=document.getElementById("filesEmpty");
+  if(empty)empty.remove();
+  l.innerHTML="";
+  if(!roomFiles.length){l.innerHTML='<div class="empty" id="filesEmpty">No files yet.</div>';return}
+  [...roomFiles].reverse().forEach(f=>{
     const d=document.createElement("div");d.className="file-item";
-    const dir=f.sent?"📤 Sent":"📥 Received";const from=f.fromName?" from "+f.fromName:"";
-    d.innerHTML='<div class="file-icon">'+fIcon(f.filename)+'</div><div class="file-info"><div class="file-name">'+esc(f.filename)+(f.isNew?' <span class="new-badge">NEW</span>':'')+
-    '</div><div class="file-meta">'+dir+from+' · '+fSize(f.size)+'</div></div>'+
-    (f.downloadUrl?'<a class="btn btn-ghost btn-sm" href="https://'+sAddr+f.downloadUrl+'" download="'+esc(f.filename)+'">⬇</a>':"");
+    const isMine=f.fromId===myId;
+    d.innerHTML='<div class="file-icon">'+fIcon(f.filename)+'</div><div class="file-info"><div class="file-name">'+esc(f.filename)+'</div><div class="file-meta">'+(isMine?"📤 You":"📥 "+esc(f.fromName||"?"))+' · '+fSize(f.size)+'</div></div>'+
+    (f.downloadUrl?'<a class="btn btn-ghost btn-sm" href="'+baseUrl+f.downloadUrl+'" download="'+esc(f.filename)+'">⬇</a>':"");
     l.appendChild(d);
   });
 }
-function setP(p){document.getElementById("pf").style.width=p+"%"}
+
+function renderVault(){
+  const l=document.getElementById("vaultList");
+  if(!vaultFiles.length){l.innerHTML='<div class="empty">No public files yet.</div>';return}
+  l.innerHTML="";
+  vaultFiles.forEach(f=>{
+    const d=document.createElement("div");d.className="file-item";
+    d.innerHTML='<div class="file-icon">'+fIcon(f.filename)+'</div><div class="file-info"><div class="file-name">'+esc(f.filename)+'</div><div class="file-meta">📥 '+esc(f.fromName||"?")+' · '+esc(f.room||"")+' · '+fSize(f.size)+'</div></div>'+
+    (f.downloadUrl?'<a class="btn btn-ghost btn-sm" href="'+baseUrl+f.downloadUrl+'" download="'+esc(f.filename)+'">⬇</a>':"");
+    l.appendChild(d);
+  });
+}
+
+function setP(p){document.getElementById("progressFill").style.width=p+"%"}
+
 function refDev(){
-  const l=document.getElementById("dl");l.innerHTML="";
-  l.appendChild(mkDev(myId,myName+" (you)",true));
-  const o=Object.entries(clients);
-  if(!o.length){const e=document.createElement("div");e.className="empty";e.textContent="No other devices.";l.appendChild(e)}
-  else o.forEach(([id,n])=>l.appendChild(mkDev(id,n,false)));
+  const l=document.getElementById("devicesList");l.innerHTML="";
+  const allMembers=Object.entries(members);
+  if(!allMembers.length){l.innerHTML='<div class="empty">No other devices.</div>';return}
+  // Add self
+  const self=document.createElement("div");self.className="device-item";
+  self.innerHTML='<div class="device-avatar">📱</div><div><div class="device-name">'+esc(myName)+' <span class="device-you">YOU</span></div><div class="device-id">#'+myId+'</div></div>';
+  l.appendChild(self);
+  allMembers.forEach(([id,name])=>{
+    if(parseInt(id)===myId)return;
+    const d=document.createElement("div");d.className="device-item";
+    d.innerHTML='<div class="device-avatar">📱</div><div><div class="device-name">'+esc(name)+'</div><div class="device-id">#'+id+'</div></div>';
+    l.appendChild(d);
+  });
 }
-function mkDev(id,name,isYou){
-  const d=document.createElement("div");d.className="device-item";
-  d.innerHTML='<div class="device-avatar">📱</div><div><div class="device-name">'+esc(name)+'</div><div class="device-id">#'+id+(isYou?' <span class="device-you">YOU</span>':"")+
-  '</div></div>';return d;
-}
+
 function refSel(){
-  ["ct","ft"].forEach(id=>{
-    const s=document.getElementById(id),v=s.value;
+  ["chatTarget","fileTarget"].forEach(selId=>{
+    const s=document.getElementById(selId),v=s.value;
     s.innerHTML='<option value="all">📢 Everyone</option>';
-    Object.entries(clients).forEach(([cid,cn])=>{const o=document.createElement("option");o.value=cid;o.textContent="🔒 "+cn+" (private)";s.appendChild(o)});
+    Object.entries(members).forEach(([cid,cn])=>{
+      if(parseInt(cid)===myId)return;
+      const o=document.createElement("option");o.value=cid;o.textContent="🔒 "+cn+" (private)";s.appendChild(o);
+    });
     if([...s.options].some(o=>o.value===v))s.value=v;
   });
 }
+
 function switchTab(name){
-  tab=name;
+  activeTab=name;
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
   document.querySelectorAll(".tab-panel").forEach(p=>{p.classList.toggle("active",p.id===name+"Panel");p.style.display=p.id===name+"Panel"?"flex":"none"});
-  if(name==="files"){newF=0;updBadge();files.forEach(f=>f.isNew=false);renderFiles()}
+  if(name==="files"){newFileCount=0;updBadge()}
+  if(name==="vault"){ws.send(JSON.stringify({type:"get_vault"}))}
   if(name==="devices")refDev();
 }
 document.getElementById("chatPanel").style.display="flex";
-function updBadge(){const b=document.getElementById("fb");b.style.display=newF>0?"":"none";b.textContent=newF}
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function updBadge(){const b=document.getElementById("fileBadge");b.style.display=newFileCount>0?"":"none";b.textContent=newFileCount}
 function setStatus(s){
   const d=document.getElementById("sd"),t=document.getElementById("statusText");
   d.className="status-dot "+s;
